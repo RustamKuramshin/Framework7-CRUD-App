@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Color theme for statusbar -->
+    <meta name="theme-color" content="#2196f3">
+    <!-- Your app title -->
+    <title>Truck Viewer</title>
+    <!-- Path to Framework7 Library CSS -->
+    <link rel="stylesheet" href="./framework7/css/framework7.min.css">
+    <link rel="stylesheet" href="./framework7/css/framework7-icons.css">
+</head>
+<body>
+
+<div id="app">
+
+    <div class="statusbar"></div>
+
+    <div class="view view-main">
+
+        <div data-name="home" class="page">
+
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="title">Тестовое приложение TruckViewer</div>
+                </div>
+            </div>
+
+            <div class="page-content">
+
+                <script id="listTemplate" type="text/template7">
+                    <div class="list">
+                        <ul>
+                            {{#each trucks}}
+                            <li>
+                                <a href="/truck/" class="item-link item-content">
+                                    <div class="item-media"><i class="icon f7-icons">rocket_fill</i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">
+                                            <div class="item-header">
+                                                <div class="padding">{{nameTruck}}</div>
+                                            </div>
+                                            <i class="icon f7-icons">money_rubl_round</i>
+                                            {{price}}
+                                        </div>
+                                        <div class="item-after">Редактировать</div>
+                                    </div>
+                                </a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </script>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript" src="./framework7/js/framework7.min.js"></script>
+<script src="./js/routes.js"></script>
+<script type="text/javascript" src="./js/ajv.min.js"></script>
+<script type="text/javascript" src="./js/my-app.js"></script>
+
+</body>
+</html>
