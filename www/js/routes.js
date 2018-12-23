@@ -4,7 +4,7 @@ routes = [
         url: './index.html',
     },
     {
-        path: '/truck/',
+        path: '/truck/:id/',
         url: './pages/truck.html',
     }
 ];
