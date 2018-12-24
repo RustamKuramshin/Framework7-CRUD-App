@@ -1,48 +1,74 @@
-<div class="page">
-    <div class="navbar">
-        <div class="navbar-inner sliding">
-            <div class="left">
-                <a href="#" class="link back">
-                    <i class="icon icon-back"></i>
-                </a>
-            </div>
-            <div class="title">Данные грузовика</div>
-        </div>
-    </div>
-    <div class="page-content">
-        <div class="block">
-            <p>Укажите наименование и стоимость грузовика</p>
-        </div>
-        <form class="list" id="truckForm">
-            <ul>
-                <li>
-                    <div class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">Наименование</div>
-                            <div class="item-input-wrap">
-                                <input type="text" name="nameTruck" placeholder="" value="{{this.$route.query.nameTruck}}">
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item-content item-input">
-                        <div class="item-inner">
-                            <div class="item-title item-label">Стоимость</div>
-                            <div class="item-input-wrap">
-                                <input type="number" name="price" placeholder="0.00" value="{{this.$route.query.price}}">
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </form>
-        <div class="block">
-            <div class="row">
-                <button class="col button button-fill button-round save-truck-data">Сохранить</button>
+<template>
+    <div class="page">
+        <div class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                    </a>
+                </div>
+                <div class="title">Данные грузовика</div>
             </div>
         </div>
-
+        <div class="page-content">
+            <div class="block">
+                <p>Укажите наименование и стоимость грузовика</p>
+            </div>
+            <form class="list" id="truckForm">
+                <ul>
+                    <li>
+                        <div class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Наименование</div>
+                                <div class="item-input-wrap">
+                                    <input type="text" name="nameTruck" placeholder="" value="{{truck.nameTruck}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Стоимость</div>
+                                <div class="item-input-wrap">
+                                    <input type="number" name="price" placeholder="0.00" value="{{truck.price}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Комментарий</div>
+                                <div class="item-input-wrap">
+                                    <textarea placeholder="Комментарий" name="comment">{{truck.comment}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <div class="block">
+                <div class="row">
+                    <button class="col button button-fill button-round save-truck-data">Сохранить</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
+</template>
+<script>
+    return {
+        data: function () {
+            var truckId = this.$route.params.id;
+            var currentTruck;
+            this.$root.trucks.forEach(function (truck) {
+                if (truck.id === truckId) {
+                    currentTruck = truck;
+                }
+            });
+            return {
+                truck: currentTruck,
+            };
+        }
+    };
+</script>

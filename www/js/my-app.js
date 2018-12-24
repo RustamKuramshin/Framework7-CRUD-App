@@ -8,7 +8,7 @@ function createValidator(schema) {
     return ajv.compile(schema);
 }
 
-function refreshTrucksList() {
+function getTrucksList() {
 
     Framework7.request.get('http://rsprm.ru/test/trucks', function (data) {
 
@@ -28,17 +28,22 @@ function refreshTrucksList() {
                 "price": {
                     "description": "truck price",
                     "type": "string"
+                },
+                "comment": {
+                    "description": "comment",
+                    "type": "string"
                 }
             },
-            "required": [ "id", "nameTruck", "price" ]
+            "required": [ "id", "nameTruck", "price", "comment" ]
         });
 
         let trucksArray = JSON.parse(data);
 
-        let listTemplate = $$('#listTemplate').html();
-        let compiledTemplate = Template7.compile(listTemplate);
-        let htmlStr = compiledTemplate({trucks: trucksArray.filter(truckValidator)});
-        $$('.page-content').append(htmlStr);
+        app.data.trucks = trucksArray.filter(truckValidator);
+
+        var catalogView = app.views.create('#view-catalog', {
+            url: '/catalog/'
+        });
 
     });
 }
@@ -49,14 +54,15 @@ let app = new Framework7({
     routes: routes,
     on: {
         init: function () {
-            refreshTrucksList();
+            getTrucksList();
+        }
+    },
+    data: function () {
+        return {
+            trucks: undefined
         }
     },
     name: 'TruckViewer',
     version: '1.0.0',
     theme: 'auto'
 });
-
-let mainView = app.views.create('.view-main');
-
-
