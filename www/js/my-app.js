@@ -59,10 +59,4 @@ let app = new Framework7({
 
 let mainView = app.views.create('.view-main');
 
-app.on('pageInit', function (page) {
-    $$('.save-truck-data').on('click', function(){
-        console.log('click');
-    });
-});
-
 

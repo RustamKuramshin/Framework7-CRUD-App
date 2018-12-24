@@ -5,6 +5,14 @@ routes = [
     },
     {
         path: '/truck/:id/',
-        url: './pages/truck.html',
+        templateUrl: './pages/truck.html',
+        on: {
+            pageInit: function (e, page) {
+                $$('.save-truck-data').on('click', function(){
+                    let formData = app.form.convertToData('#truckForm');
+                    alert(JSON.stringify(formData));
+                });
+            }
+        }
     }
 ];
