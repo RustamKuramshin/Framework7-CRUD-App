@@ -7,54 +7,45 @@ function createValidator(schema) {
     let ajv = new Ajv({allErrors: true});
     return ajv.compile(schema);
 }
-
-function getTrucksList() {
-
-    Framework7.request.get('http://rsprm.ru/test/trucks', function (data) {
-
-        let truckValidator = createValidator({
-            "title": "Truck",
-            "description": "Validate truck object",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "description": "truck id",
-                    "type": "string"
-                },
-                "nameTruck": {
-                    "description": "truck name",
-                    "type": "string"
-                },
-                "price": {
-                    "description": "truck price",
-                    "type": "string"
-                },
-                "comment": {
-                    "description": "comment",
-                    "type": "string"
-                }
-            },
-            "required": [ "id", "nameTruck", "price", "comment" ]
-        });
-
-        let trucksArray = JSON.parse(data);
-
-        app.data.trucks = trucksArray.filter(truckValidator);
-
-        var catalogView = app.views.create('#view-catalog', {
-            url: '/catalog/'
-        });
-
-    });
-}
-
 let app = new Framework7({
     root: '#app',
     id: 'ru.rsprm',
-    routes: routes,
+    routes: [
+        {
+            path: '/',
+            url: './index.html',
+        },
+        {
+            name: 'catalog',
+            path: '/catalog/',
+            componentUrl: './pages/catalog.html',
+        },
+        {
+            path: '/truck/:id/',
+            componentUrl: './pages/truck.html',
+            on: {
+                pageInit: function (e, page) {
+                    $$('.save-truck-data').on('click', function () {
+                        let formDataObj = app.form.convertToData('#truckForm');
+                        app.request({
+                            url: 'http://rsprm.ru/test/truck/'.concat(page.route.params.id),
+                            async: false,
+                            method: 'PATCH',
+                            data: JSON.stringify(formDataObj),
+                            contentType: 'application/json',
+                            crossDomain: true,
+                            processData: false
+                        });
+
+                        app.router.navigate({ name: 'catalog' });
+                    });
+                }
+            }
+        }
+    ],
     on: {
         init: function () {
-            getTrucksList();
+
         }
     },
     data: function () {
@@ -65,4 +56,8 @@ let app = new Framework7({
     name: 'TruckViewer',
     version: '1.0.0',
     theme: 'auto'
+});
+
+var catalogView = app.views.create('#view-catalog', {
+    url: '/catalog/'
 });

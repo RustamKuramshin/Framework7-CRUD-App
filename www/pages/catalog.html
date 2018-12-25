@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
     <div class="page" data-name="catalog">
         <div class="navbar">
@@ -6,6 +7,7 @@
             </div>
         </div>
         <div class="page-content">
+            {{#if trucks}}
             <div class="list media-list">
                 <ul>
                     {{#each trucks}}
@@ -25,7 +27,13 @@
                     {{/each}}
                 </ul>
             </div>
+            {{else}}
 
+            <div class="block block-strong text-align-center">
+                <div class="preloader"></div>
+            </div>
+
+            {{/if}}
         </div>
     </div>
 </template>
@@ -33,8 +41,48 @@
     return {
         data: function () {
             return {
-                trucks: this.$root.trucks,
-            };
-        }
+                trucks: null,
+            }
+        },
+        on: {
+            pageInit: function () {
+                var self = this;
+                var app = self.$app;
+                app.request.get('http://rsprm.ru/test/trucks', (data) => {
+
+                    let truckValidator = createValidator({
+                        "title": "Truck",
+                        "description": "Validate truck object",
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "description": "truck id",
+                                "type": "string"
+                            },
+                            "nameTruck": {
+                                "description": "truck name",
+                                "type": "string"
+                            },
+                            "price": {
+                                "description": "truck price",
+                                "type": "string"
+                            },
+                            "comment": {
+                                "description": "comment",
+                                "type": "string"
+                            }
+                        },
+                        "required": ["id", "nameTruck", "price", "comment"]
+                    });
+
+                    let trucksArray = JSON.parse(data);
+                    app.data.trucks = trucksArray.filter(truckValidator);
+
+                    self.$setState({
+                        trucks: app.data.trucks,
+                    });
+                });
+            },
+        },
     };
 </script>
