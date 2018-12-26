@@ -23,24 +23,6 @@ let app = new Framework7({
         {
             path: '/truck/:id/',
             componentUrl: './pages/truck.html',
-            on: {
-                pageInit: function (e, page) {
-                    $$('.save-truck-data').on('click', function () {
-                        let formDataObj = app.form.convertToData('#truckForm');
-                        app.request({
-                            url: 'http://rsprm.ru/test/truck/'.concat(page.route.params.id),
-                            async: false,
-                            method: 'PATCH',
-                            data: JSON.stringify(formDataObj),
-                            contentType: 'application/json',
-                            crossDomain: true,
-                            processData: false
-                        });
-
-                        app.router.navigate({ name: 'catalog' });
-                    });
-                }
-            }
         }
     ],
     on: {

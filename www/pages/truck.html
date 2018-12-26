@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
     <div class="page">
         <div class="navbar">
@@ -12,7 +13,7 @@
         </div>
         <div class="page-content">
             <div class="block">
-                <p>Укажите наименование и стоимость грузовика</p>
+                <p>Описание грузовика</p>
             </div>
             <form class="list" id="truckForm">
                 <ul>
@@ -21,7 +22,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Наименование</div>
                                 <div class="item-input-wrap">
-                                    <input type="text" name="nameTruck" placeholder="" value="{{truck.nameTruck}}">
+                                    <input type="text" name="nameTruck" value="{{truck.nameTruck}}" required validate>
                                 </div>
                             </div>
                         </div>
@@ -31,7 +32,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Стоимость</div>
                                 <div class="item-input-wrap">
-                                    <input type="number" name="price" placeholder="0.00" value="{{truck.price}}">
+                                    <input type="number" name="price" value="{{truck.price}}" required validate pattern="[0-9]*">
                                 </div>
                             </div>
                         </div>
@@ -50,7 +51,12 @@
             </form>
             <div class="block">
                 <div class="row">
+                    {{#if truck.id}}
                     <button class="col button button-fill button-round save-truck-data">Сохранить</button>
+                    <button class="col button button-fill button-round color-red delete-truck">Удалить</button>
+                    {{else}}
+                    <button class="col button button-fill button-round write-truck-data">Записать</button>
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -60,15 +66,81 @@
     return {
         data: function () {
             var truckId = this.$route.params.id;
-            var currentTruck;
-            this.$root.trucks.forEach(function (truck) {
-                if (truck.id === truckId) {
-                    currentTruck = truck;
-                }
-            });
-            return {
-                truck: currentTruck,
+            if (truckId != 'create-truck') {
+                var currentTruck;
+                this.$root.trucks.forEach(function (truck) {
+                    if (truck.id === truckId) {
+                        currentTruck = truck;
+                    }
+                });
+                return {
+                    truck: currentTruck,
+                };
+            } else {
+                return {
+                    truck: {},
+                };
             };
+        },
+
+        on: {
+            pageInit: function (e, page) {
+
+                let formValid = true;
+
+                $$('.save-truck-data, .write-truck-data').on('click', function () {
+                    let formDataObj = app.form.convertToData('#truckForm');
+                    if (formDataObj.nameTruck == '' || formDataObj.price == ''){
+                        formValid = false;
+                        app.dialog.alert("Наименование и Стоимость должны быть заполнены");
+                    };
+                });
+
+                $$('.save-truck-data').on('click', function () {
+                    if (!formValid) return;
+                    let formDataObj = app.form.convertToData('#truckForm');
+                    app.request({
+                        url: 'http://rsprm.ru/test/truck/'.concat(page.route.params.id),
+                        async: false,
+                        method: 'PATCH',
+                        data: JSON.stringify(formDataObj),
+                        contentType: 'application/json',
+                        crossDomain: true,
+                        processData: false
+                    });
+
+                    app.router.navigate({ name: 'catalog' });
+                });
+
+                $$('.write-truck-data').on('click', function () {
+                    if (!formValid) return;
+                    let formDataObj = app.form.convertToData('#truckForm');
+                    app.request({
+                        url: 'http://rsprm.ru/test/truck/add',
+                        async: false,
+                        method: 'POST',
+                        data: JSON.stringify(formDataObj),
+                        contentType: 'application/json',
+                        crossDomain: true,
+                        processData: false
+                    });
+
+                    app.router.navigate({ name: 'catalog' });
+                });
+
+                $$('.delete-truck').on('click', function () {
+
+                    app.request({
+                        url: 'http://rsprm.ru/test/truck/'.concat(page.route.params.id),
+                        async: false,
+                        method: 'DELETE',
+                        crossDomain: true,
+                        processData: false
+                    });
+
+                    app.router.navigate({ name: 'catalog' });
+                });
+            }
         }
     };
 </script>
